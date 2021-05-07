@@ -36,7 +36,10 @@ public class WritePost extends AppCompatActivity {
         if(requestCode==GET_IMG_FROM_GALLERY&&resultCode==RESULT_OK&&data!=null&&data.getData()!=null){
 
             Uri selectedImageUri=data.getData();
+            //url db에 저장
             imageview.setImageURI(selectedImageUri);
+
+            
         }
     }
 
