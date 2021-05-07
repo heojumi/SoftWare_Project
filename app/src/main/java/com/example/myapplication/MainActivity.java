@@ -1,8 +1,8 @@
 package com.example.myapplication;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -17,3 +17,4 @@ public class MainActivity extends AppCompatActivity {
 //소민
 //윤영
 //주미
+//예린
