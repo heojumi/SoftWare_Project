@@ -15,7 +15,7 @@
             android:label="@string/title_activity_post" />
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value=""/>
+            android:value="AIzaSyBohP0okpdFrv0iMZiy0Ftv1d6eKo7filI"/>
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

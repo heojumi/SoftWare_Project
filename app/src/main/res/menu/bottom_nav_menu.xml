@@ -5,7 +5,7 @@
         android:id="@+id/navigation_home"
         android:icon="@drawable/ic_home_black_24dp"
         android:title="주변동물병원"
-        android:enable="true"
+        android:enabled="true"
         />
 
     <item

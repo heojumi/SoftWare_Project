@@ -1,11 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:background="#FFFFFF">
 
-<LinearLayout
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical"
@@ -20,14 +17,39 @@
         android:scaleType="fitCenter"
         app:srcCompat="@drawable/ic_image" />
 
+
+    <LinearLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+        <Button
+            android:id="@+id/locationbutton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="get location"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/locationText"
+            android:layout_width="265dp"
+            android:layout_height="36dp"
+            android:text="Your Loaction"
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+</LinearLayout>
+
     <EditText
         android:id="@+id/content"
         android:layout_width="411dp"
         android:layout_height="200dp"
         android:layout_weight="1"
-        android:background="@null"
+        android:background="@drawable/maintext_border"
         android:gravity="top|start"
-        android:inputType="text" />
+        android:hint="게시글을 입력하세요 "
+        android:inputType="text"
+        app:layout_constraintTop_toTopOf="parent"
+
+        />
 
 </LinearLayout>
-</RelativeLayout>
