@@ -245,7 +245,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         new NRPlaces.Builder()
                 .listener(MainActivity.this)
-                .key("//키")
+                .key("키")
                 .latlng(location.latitude, location.longitude)//현재 위치
                 .radius(5000) //500 미터 내에서 검색
                 .type(PlaceType.VETERINARY_CARE) //음식점
