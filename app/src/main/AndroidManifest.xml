@@ -16,13 +16,16 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MyApplication">
+        <activity android:name=".PostContent"
+            android:parentActivityName=".PostActivity">
+        </activity>
         <activity android:name=".WritePost"></activity>
         <activity
             android:name=".PostActivity"
             android:label="@string/title_activity_post" />
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="키"/>
+            android:value="키키키키키"/>
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

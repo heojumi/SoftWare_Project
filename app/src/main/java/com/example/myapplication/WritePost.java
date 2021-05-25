@@ -61,6 +61,9 @@ public class WritePost extends AppCompatActivity {
     String photoImgName;
     private String currentPhotoPathl;
     TextView locationTxt;
+    String provider;
+    double latitude;
+    double longitude;
 
 
     //GPSListener gpsListener;
@@ -103,16 +106,16 @@ public class WritePost extends AppCompatActivity {
                 }
                 Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
                 String provider=location.getProvider();
-                double latitude=location.getLatitude();//위도
-                double longitude=location.getLongitude();//경도
+                latitude=location.getLatitude();//위도
+                longitude=location.getLongitude();//경도
 
                 String add=getCurrentAddress(latitude,longitude);
 
                 //locationTxt.setText("위치정보: "+provider+"\n"+"위도: "+latitude+"\n"+"경도: "+longitude);
                 locationTxt.setText(getCurrentAddress(latitude,longitude));
-                //Toast.makeText(WritePost.this,"위도: "+latitude+", 경도: "+longitude,Toast.LENGTH_LONG).show();
-                lm.requestLocationUpdates(LocationManager.GPS_PROVIDER,5000,100,gpsLocationListener);
-                lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,5000,100,gpsLocationListener);
+                Toast.makeText(WritePost.this,"위도: "+latitude+", 경도: "+longitude,Toast.LENGTH_LONG).show();
+                //lm.requestLocationUpdates(LocationManager.GPS_PROVIDER,5000,100,gpsLocationListener);//5초, 100미터
+                //lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,5000,100,gpsLocationListener);
 
             }
         });
@@ -285,8 +288,8 @@ public class WritePost extends AppCompatActivity {
         @Override
         public void onLocationChanged(Location location) {
             String provider=location.getProvider(); //위치정보
-            double longitude=location.getLongitude(); //경도
-            double latitude=location.getLatitude(); //위도
+            longitude=location.getLongitude(); //경도
+            latitude=location.getLatitude(); //위도
 
             locationTxt.setText(getCurrentAddress(latitude,longitude));
             //Toast.makeText(WritePost.this,"위도: "+latitude+", 경도: "+longitude,Toast.LENGTH_LONG).show();
@@ -316,10 +319,11 @@ public class WritePost extends AppCompatActivity {
         if(ContextCompat.checkSelfPermission(this,Manifest.permission.WRITE_EXTERNAL_STORAGE)!=PackageManager.PERMISSION_GRANTED){
             temp+=Manifest.permission.WRITE_EXTERNAL_STORAGE+" ";
         }
-
+        /*
         if(ContextCompat.checkSelfPermission(this,Manifest.permission.CAMERA)!=PackageManager.PERMISSION_GRANTED) {
             temp += Manifest.permission.CAMERA + " ";
         }
+        */
 
         if(ContextCompat.checkSelfPermission(this,Manifest.permission.ACCESS_FINE_LOCATION)!=PackageManager.PERMISSION_GRANTED){
             temp+=Manifest.permission.ACCESS_FINE_LOCATION+" ";
@@ -328,7 +332,7 @@ public class WritePost extends AppCompatActivity {
         if(TextUtils.isEmpty(temp)==false){//temp에 내용이 있다면, 허가되지 않은 요청이 았다는 의미이므로
             ActivityCompat.requestPermissions(this,temp.trim().split(" "),1);//" "를 기준으로 권한요청
         }else{
-            Toast.makeText(this,"어플리케이션 사용을 위해 카메라, 갤러리, 위치 접근이 허가되어있습니다.",Toast.LENGTH_SHORT).show();
+            Toast.makeText(this,"어플리케이션 사용을 위해 갤러리, 위치 접근이 허가되어있습니다.",Toast.LENGTH_SHORT).show();
         }
     }
 

@@ -35,14 +35,29 @@
             />
     </FrameLayout>
 
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_behavior="vertical"
+        android:layout_gravity="bottom">
     <Button
         android:id="@+id/button2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="go to sub"
-        android:layout_gravity="bottom"
+        android:text="WritePost"
+
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/button1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="ShowPost"
+        >
+
+    </Button>
+    </LinearLayout>
 
     <Button
         android:layout_width="wrap_content"

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    >
+    <ScrollView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        >
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            >
+            <ImageView
+                android:id="@+id/showImage"
+                android:layout_width="wrap_content"
+                android:layout_height="250dp"
+                android:layout_gravity="center_vertical|center_horizontal"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:layout_weight="0"
+                android:scaleType="fitCenter"
+                app:srcCompat="@drawable/ic_image"
+                />
+
+            <TextView
+                android:id="@+id/showTitle"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:background="@drawable/maintext_border"
+                android:gravity="center_vertical|left"
+                android:text="제목"
+                android:paddingStart="10dp"
+                android:layout_weight="0"
+                app:layout_constraintTop_toTopOf="parent"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                />
+
+
+            <TextView
+                android:id="@+id/showLocationText"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:layout_gravity="center"
+                android:gravity="center_vertical|left"
+                android:text="현재 위치"
+                android:paddingStart="10dp"
+                android:layout_weight="0"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+
+
+
+            <TextView
+                android:id="@+id/showContent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/content_border"
+                android:gravity="top|start"
+                android:text="내용"
+                android:lineSpacingMultiplier="1.2"
+                android:paddingStart="10dp"
+                android:paddingTop="8dp"
+                android:paddingEnd="10dp"
+                app:layout_constraintTop_toTopOf="parent"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
+        </LinearLayout>
+    </ScrollView>
+
+
+</LinearLayout>
