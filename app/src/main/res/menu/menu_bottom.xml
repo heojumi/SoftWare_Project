@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/tab1"
+        app:showAsAction="ifRoom"
+        android:enabled="true"
+        android:title="주변동물병원"
+        android:icon="@android:drawable/ic_dialog_map"
+        android:iconTint="#FF000000"/>
+
+    <item
+        android:id="@+id/tab2"
+        app:showAsAction="ifRoom"
+        android:title="유기실종동물"
+        android:icon="@drawable/list"
+        android:iconTint="#FF000000"/>
+
+    <item
+        android:id="@+id/tab3"
+        app:showAsAction="ifRoom"
+        android:enabled="true"
+        android:title="내정보"
+        android:icon="@drawable/ic_home_black_24dp"/>
+
+</menu>
