@@ -3,11 +3,14 @@ package com.example.myapplication;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.widget.DatePicker;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+
+import android.database.sqlite.SQLiteDatabase;
 
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -24,6 +27,9 @@ public class MainActivity extends AppCompatActivity implements onTabItemSelected
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        DatabaseHelper databaseHelper = new DatabaseHelper(this, "DB", null, 1);
+
+        SQLiteDatabase db = databaseHelper.getWritableDatabase();
 
         fragment2 = new PostActivity();
         fragment3 = new MyinfoActivity();
@@ -54,6 +60,8 @@ public class MainActivity extends AppCompatActivity implements onTabItemSelected
                         return false;
                     }
                 });
+        db.close();
+        databaseHelper.close();
 
     }
     public void onTabSelected(int position) {
