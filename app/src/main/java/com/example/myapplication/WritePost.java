@@ -278,7 +278,9 @@ public class WritePost extends AppCompatActivity {
             return "주소 미발견";
         }
         Address address=add.get(0);
-        return address.getAdminArea()+" "+address.getSubLocality()+" "+address.getThoroughfare().toString();  //지오코더 주소 자르기, 순서대로 도/행정구역/동 단위
+        String adr=address.getAddressLine(0).toString().replaceFirst("대한민국","");
+        //return address.getAdminArea()+" "+address.getSubLocality()+" "+address.getThoroughfare().toString();  //지오코더 주소 자르기, 순서대로 도/행정구역/동 단위
+        return adr;
 
         //return address.getAddressLine(0).toString()+"\n";
     }
