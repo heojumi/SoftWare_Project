@@ -17,6 +17,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity implements onTabItemSelectedListener {
 
+
     PostActivity fragment2;
     MyinfoActivity fragment3;
     BottomNavigationView bottomNavigation;
