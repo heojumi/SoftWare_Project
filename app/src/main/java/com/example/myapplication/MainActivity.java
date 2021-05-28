@@ -1,5 +1,6 @@
 package com.example.myapplication;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -12,7 +13,7 @@ import androidx.fragment.app.Fragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity implements onTabItemSelectedListener {
-    MapActivity fragment1;
+
     PostActivity fragment2;
     MyinfoActivity fragment3;
     BottomNavigationView bottomNavigation;
@@ -23,11 +24,11 @@ public class MainActivity extends AppCompatActivity implements onTabItemSelected
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        fragment1 = new MapActivity();
+
         fragment2 = new PostActivity();
         fragment3 = new MyinfoActivity();
 
-        getSupportFragmentManager().beginTransaction().replace(R.id.container, fragment1).commit();
+        Intent intent=new Intent(this, MapActivity.class);
 
         bottomNavigation = findViewById(R.id.bottom_navigation);
         bottomNavigation.setOnNavigationItemSelectedListener(
@@ -37,7 +38,7 @@ public class MainActivity extends AppCompatActivity implements onTabItemSelected
                         switch (item.getItemId()) {
                             case R.id.tab1:
                                 Toast.makeText(getApplicationContext(), "주변동물병원", Toast.LENGTH_LONG).show();
-                                getSupportFragmentManager().beginTransaction().replace(R.id.container, fragment1).commit();
+                                startActivityForResult(intent,1);
                                 return true;
 
                             case R.id.tab2:

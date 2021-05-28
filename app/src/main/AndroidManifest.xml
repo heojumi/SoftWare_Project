@@ -17,6 +17,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MyApplication">
+        <activity android:name=".MapActivity"/>
         <activity android:name=".PostContent"
             android:parentActivityName=".PostActivity">
         </activity>
@@ -24,7 +25,9 @@
         <activity
             android:name=".PostActivity"
             android:label="@string/title_activity_post"
-            tools:ignore="Instantiatable" />
+            tools:ignore="Instantiatable"
+            />
+
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="키키키키키"/>
