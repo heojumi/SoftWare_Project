@@ -1,5 +1,9 @@
 package com.example.myapplication;
 
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
@@ -26,11 +30,32 @@ public class PostContent extends AppCompatActivity {
         TextView location=(TextView)findViewById(R.id.showLocationText);
         TextView content=(TextView)findViewById(R.id.showContent);
         ImageView img=(ImageView)findViewById(R.id.showImage);
+        double lat=0;
+        double longi=0;
+        byte[] bit=null;
+        String tit=null;
+        String con=null;
 
-        title.setText("테스트: 여기는 제목칸 입니다!");
-        location.setText(showAddressString(37.49461918939203, 126.95988886699955));
-        content.setText("유리병 속에 담긴 나의 바다 파란 포도즙 밤하늘 저 푸른 달빛 부서져가는 나의 여름밤 파란 달나라로 나를 데려가줘요 어렸을적 파란밤 달빛 내리는 거릴 걷다가 소년을 바라보다 벼락맞아었지 그건 아마 어린 나에겐 사랑인줄도 모르고 가슴만 저려오며 파란달만 쳐다 보았네 밤이면 추억들이 파도에 밀려 바람에 실려 슬픈 지난일을 모두 데려가줘요 어렸을적 파란밤 달빛 내리는 거릴 걷다가 소년을 바라보다 벼락맞아었지 그건 아마 어린 나에겐 사랑인줄도 모르고 가슴만 저려오며 파란달만 쳐다 보았네 숨박꼭질 하던 소년 넌 어디로 숨어 버렸나 저기 저 파란 하늘만 조용히 웃고 있네요 어렸을적 파란밤 달빛 내리는 거릴 걷다가 소년을 바라보다 벼락맞아었지 그건 아마 어린 나에겐 사랑인줄도 모르고 가슴만 저려오며 파란달만 쳐다 보았네 그건 아마 어린 나에겐 사랑인줄도 모르고 가슴만 저려오며 파란달만 쳐다 보았네\n" );
 
+        DatabaseHelper databaseHelper = new DatabaseHelper(PostContent.this, "DB", null, 1);
+        SQLiteDatabase db = databaseHelper.getReadableDatabase();
+        
+        //PostActivity에서 사용자가 클릭한 게시글 있으면, 그거 intent로 전달 -> intent받아서 pid든 뭐든 으로 구별짓기
+        String sql="select * from Post where PID=2";
+        Cursor cursor=db.rawQuery(sql,null);
+        while(cursor.moveToNext()){
+            tit=cursor.getString(1);
+            con=cursor.getString(2);
+            lat=cursor.getDouble(3);
+            longi=cursor.getDouble(4);
+            bit=cursor.getBlob(5);
+        }
+
+        title.setText(tit);
+        content.setText(con);
+        location.setText(showAddressString(lat,longi));
+        Bitmap bitmap= BitmapFactory.decodeByteArray(bit,0,bit.length);
+        img.setImageBitmap(bitmap);
         //img.setImageURI();
 
 

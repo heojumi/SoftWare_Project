@@ -6,6 +6,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Address;
@@ -16,6 +18,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -43,17 +46,21 @@ import android.os.Bundle;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import com.example.myapplication.MainActivity;
 
 public class WritePost extends AppCompatActivity {
 
     private final int GET_IMG_FROM_GALLERY = 200; //갤러리 사진 요청 request
     private final int GET_IMG_FROM_CAMERA = 400;
+    private final int GPS_ENABLE_REQUEST_CODE=300;
     private ImageView imageview;
     private EditText editText;
     private Uri photoUri;
@@ -62,8 +69,12 @@ public class WritePost extends AppCompatActivity {
     private String currentPhotoPathl;
     TextView locationTxt;
     String provider;
-    double latitude;
-    double longitude;
+    double latitude=0; //위도
+    double longitude=0;   //경도
+    EditText contentText;
+    EditText titleText;
+    Location location;
+    Bitmap bitmap;
 
 
     //GPSListener gpsListener;
@@ -72,11 +83,15 @@ public class WritePost extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_write_post);
 
-            checkPermission();
+        checkPermission();
+
+        if(!checkLocationServiceStatus())
+                showDialogForLocationServiceSetting();
+
 
         //본문 (content) 내용 string으로 바꿔오기
-        editText = (EditText) findViewById(R.id.content);
-        String mainText = editText.getText().toString();
+        contentText = (EditText) findViewById(R.id.content);
+        titleText=(EditText) findViewById(R.id.title);
 
 
         //image view 위에 갤러리 접근 허가 요청 하기
@@ -95,6 +110,8 @@ public class WritePost extends AppCompatActivity {
         //버튼 누르면 현재 위치
         Button locationbutton = findViewById(R.id.locationbutton);
         final LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        List<String> providers=lm.getProviders(true);
+
         locationTxt=findViewById(R.id.locationText);
         final Geocoder geocoder=new Geocoder(this);
         locationbutton.setOnClickListener(new View.OnClickListener() {
@@ -102,10 +119,21 @@ public class WritePost extends AppCompatActivity {
             public void onClick(View v) {
                 if (ActivityCompat.checkSelfPermission(WritePost.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(WritePost.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                     checkPermission();
-                    return;
                 }
-                Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                Log.v("check","enter onclick");
+                //lm.requestLocationUpdates(LocationManager.GPS_PROVIDER,1000,100,gpsLocationListener);
+                //Log.v("check","get location update");
+                //location=lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                for(String provider:providers){
+                    Location l=lm.getLastKnownLocation(provider);
+                    if(l==null)
+                        continue;
+                    if(location==null||l.getAccuracy()<location.getAccuracy())
+                        location=l;
+                }
+                Log.v("check","get last known location");
                 String provider=location.getProvider();
+                Log.v("check","get provider");
                 latitude=location.getLatitude();//위도
                 longitude=location.getLongitude();//경도
 
@@ -150,12 +178,38 @@ public class WritePost extends AppCompatActivity {
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                String contentString = contentText.getText().toString();
+                String titleString=titleText.getText().toString();
+                byte[] imageBitmap=null;
+                if(bitmap==null) {
+                    imageBitmap = null;
+                    Log.v("check","bitmap is null");
+                }
+                if(bitmap!=null){
+                    ByteArrayOutputStream byteArrayOutputStream=new ByteArrayOutputStream();
+                    bitmap.compress(Bitmap.CompressFormat.JPEG,50,byteArrayOutputStream);
+                    imageBitmap=byteArrayOutputStream.toByteArray();
+                    String test=imageBitmap.toString();
+                    Log.v("check","bit map: "+imageBitmap);
+                }
+
+                Log.v("check","enter submit, before open db");
+
+                //MainActivity myDatabase= new MainActivity();
+
+                DatabaseHelper databaseHelper = new DatabaseHelper(WritePost.this, "DB", null, 1);
+                SQLiteDatabase db = databaseHelper.getWritableDatabase();
+
+                Log.v("check","set database");
+
+                String sql="insert into Post (title,contents,latitude,longtitude,image) values (?,?,?,?,?)";
+                Object[] params={titleString,contentString,latitude,longitude,imageBitmap};
+                db.execSQL(sql,params);
+                Log.v("check","exec success~");
+
                 Toast.makeText(WritePost.this,"업로드",Toast.LENGTH_SHORT).show();
-                /*
-                db에
-                데이터 저장
-                 */
-                finish(); //db에 저장 후, 이전 액티비티로 돌아가기
+
+                finish();//db에 저장 후, 이전 액티비티로 돌아가기
             }
         });
     }//oncreate 끝
@@ -168,82 +222,53 @@ public class WritePost extends AppCompatActivity {
         if(requestCode==GET_IMG_FROM_GALLERY&&resultCode==RESULT_OK&&data!=null&&data.getData()!=null){
 
             selectedImageUri=data.getData();
+            try{
+                bitmap=MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(),selectedImageUri);
+                Bitmap.createScaledBitmap(bitmap,150,150,true);
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            }
             //url db에 저장
             Log.v("check","gallery uri: "+selectedImageUri.toString());
             imageview.setImageURI(selectedImageUri);
         }
-        if(requestCode==GET_IMG_FROM_CAMERA){
-            String a=photoUri.toString();
-            Log.v("check","request start: "+a+"result code: "+resultCode);
 
-            imageview.setImageURI(photoUri);
+        if(requestCode==GPS_ENABLE_REQUEST_CODE&&resultCode==RESULT_OK){
+            if(checkLocationServiceStatus()){
+                Log.v("check","activity result, gps enabled: true");
+                checkPermission();
+                return;
+            }
+
         }
     }
 
-
-    private void imgDialog(){
+    private void showDialogForLocationServiceSetting(){
         AlertDialog.Builder builder=new AlertDialog.Builder(WritePost.this);
-        builder.setTitle("사진 업로드 방법 선택").setMessage("이미지를 업로드할 방법을 선택하세요: ");
-        builder.setPositiveButton("갤러리", new DialogInterface.OnClickListener() {
+        builder.setTitle("위치 서비스 설정");
+        builder.setMessage("앱을 사용하기 위해서는 위치 서비스가 필요합니다.\n"+"위치 설정을 수정하실래요?");
+        builder.setCancelable(true);
+        builder.setPositiveButton("설정", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                Intent gallery=new Intent(Intent.ACTION_PICK);
-                gallery.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,"image/*");
-                startActivityForResult(gallery,GET_IMG_FROM_GALLERY);
+                Intent callGPSSetIntent=new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                startActivityForResult(callGPSSetIntent,GPS_ENABLE_REQUEST_CODE);
             }
         });
-
-        builder.setNegativeButton("카메라", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton("취소", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                String state=Environment.getExternalStorageState();
-                if (Environment.MEDIA_MOUNTED.equals(state)) {
-                    Log.v("check","state ok");
-
-                    Intent cam = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                    Log.v("check", "enter camera dialog");
-                    //File f=new File(Environment.getExternalStorageDirectory(),"temp.jpg");
-                    //cam.putExtra(MediaStore.EXTRA_OUTPUT,Uri.fromFile(F));
-                    if (cam.resolveActivity(getPackageManager()) != null) {
-                        File photo = null;
-                        try {
-                            photo = createImageFile();
-                        }//새로운 file이 생성된 후, 해당 파일이 리턴된다.
-                        catch (IOException ex) {
-                            Toast.makeText(WritePost.this, "wrong createfile", Toast.LENGTH_LONG).show();
-
-                        }
-                        if (photo != null) {//제대로 photo 파일이 생성되었다면
-                            Log.v("check", "photo not null");
-                            try {
-                                photoUri = FileProvider.getUriForFile(getApplicationContext(), "com.example.myapplication.fileProvider", photo);
-                            } catch (IllegalArgumentException e) {
-                                Log.v("check", "wrong uri, uri err");
-                            }
-                            //사진의 uri 가져오고
-                            cam.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
-                            String ss = photoUri.toString();
-
-                            Log.v("check", "photo uri created" + ss);
-
-                            if(Build.VERSION.SDK_INT>=24)
-                                cam.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-                            else{
-                                List<ResolveInfo> resolveInfoList=getPackageManager().queryIntentActivities(cam,PackageManager.MATCH_DEFAULT_ONLY);
-                                for(ResolveInfo resinfo:resolveInfoList){
-                                    String packageName = resinfo.activityInfo.packageName;
-                                    grantUriPermission(packageName, photoUri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                                }
-                            }
-                            startActivityForResult(cam, GET_IMG_FROM_CAMERA);
-                        }
-                    }
-                }
+                dialogInterface.cancel();
             }
         });
-        AlertDialog alertDialog=builder.create();
-        alertDialog.show();
+        builder.create().show();
     }
+
+    public boolean checkLocationServiceStatus(){
+        LocationManager lm=(LocationManager) getSystemService(LOCATION_SERVICE);
+        return lm.isProviderEnabled(LocationManager.GPS_PROVIDER)||(lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER));
+    }
+
 
 
 

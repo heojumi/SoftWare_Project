@@ -1,5 +1,6 @@
 package com.example.myapplication;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android. database.sqlite.SQLiteOpenHelper;
@@ -23,7 +24,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "( UID INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 "ID TEXT NOT NULL, " +
                 "PW TEXT);";
+
         sqLiteDatabase.execSQL(createQuery);
+        Log.v("check","exec success");
 
         createQuery = "CREATE TABLE " + "Post" +
                 "( PID INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -33,11 +36,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "longtitude REAL," +
                 "image BLOB," +
                 "created_day DATETIME DEFAULT CURRENT_TIMESTAMP);";
+
+        sqLiteDatabase.execSQL(createQuery);
     }
+
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
     }
+
+
+
 }
 
 

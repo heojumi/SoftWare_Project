@@ -21,6 +21,7 @@ public class MainActivity extends AppCompatActivity implements onTabItemSelected
     PostActivity fragment2;
     MyinfoActivity fragment3;
     BottomNavigationView bottomNavigation;
+    static SQLiteDatabase db;
 
 
     @Override
@@ -30,7 +31,9 @@ public class MainActivity extends AppCompatActivity implements onTabItemSelected
 
         DatabaseHelper databaseHelper = new DatabaseHelper(this, "DB", null, 1);
 
-        SQLiteDatabase db = databaseHelper.getWritableDatabase();
+        db = databaseHelper.getWritableDatabase();
+
+
 
         fragment2 = new PostActivity();
         fragment3 = new MyinfoActivity();
@@ -61,8 +64,8 @@ public class MainActivity extends AppCompatActivity implements onTabItemSelected
                         return false;
                     }
                 });
-        db.close();
-        databaseHelper.close();
+        //db.close();
+        //databaseHelper.close();
 
     }
     public void onTabSelected(int position) {
@@ -73,6 +76,10 @@ public class MainActivity extends AppCompatActivity implements onTabItemSelected
         } else if(position==2) {
             bottomNavigation.setSelectedItemId(R.id.tab3);
         }
+    }
+
+    public SQLiteDatabase sendDatabase(){
+        return db;
     }
 
 
