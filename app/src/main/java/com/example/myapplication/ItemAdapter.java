@@ -54,7 +54,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
             title.setText(data.getTitle());
             address.setText(data.getAddress());
             date.setText(data.getDate());
-            image.setImageResource(data.getImage());
+            image.setImageBitmap(data.getImage());
         }
     }
 }
