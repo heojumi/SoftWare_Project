@@ -116,6 +116,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 showPlaceInformation(currentPosition);
             }
         });
+
+
         Button button2 = (Button)findViewById(R.id.button2);
         button2.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -262,6 +264,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
 
     }
+
     public void showAnimalInformation(LatLng location){
         mMap.clear();
         String sql="select * from Post";
