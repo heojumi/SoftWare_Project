@@ -5,8 +5,8 @@ import android.graphics.Bitmap;
 import java.net.URL;
 import java.util.Date;
 
-public class ItemContent { //set,get도 만들라는데......
-    String id;
+public class ItemContent {
+
     Bitmap image;
     String title;
     String address;

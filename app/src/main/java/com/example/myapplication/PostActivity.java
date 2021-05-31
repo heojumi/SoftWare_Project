@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -67,6 +68,15 @@ public class PostActivity extends Fragment {
             public void onClick(View view) {
                 Intent inte=new Intent(getActivity(),PostContent.class);
                 startActivity(inte);
+            }
+        });
+
+        adapter.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(ItemAdapter.ItemViewHolder holder, View view, int position) {
+                ItemContent item=adapter.getItem(position);
+                //눌렀을때 코드!!
+                Toast.makeText(getActivity().getApplicationContext(),"클릭성공",Toast.LENGTH_LONG).show();
             }
         });
         return root;
