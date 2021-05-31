@@ -2,6 +2,7 @@ package com.example.myapplication;
 
 import android.content.Intent;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Address;
@@ -9,13 +10,18 @@ import android.location.Geocoder;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
+import android.app.ActionBar;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresPermission;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -43,7 +49,7 @@ public class PostActivity extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        setHasOptionsMenu(true);
     }
 
 
@@ -51,37 +57,46 @@ public class PostActivity extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         //ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.activity_post, container, false);
         View root=inflater.inflate(R.layout.activity_post,container,false);
-        Button btn=root.findViewById(R.id.writeButton);
-        Button showcon=root.findViewById(R.id.ContentButton);
-
         init(root);
         getData();
-        btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent=new Intent(getActivity(),WritePost.class);
-                startActivity(intent);
-            }
-        });
-        showcon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent inte=new Intent(getActivity(),PostContent.class);
-                startActivity(inte);
-            }
-        });
+
+
 
         adapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(ItemAdapter.ItemViewHolder holder, View view, int position) {
                 ItemContent item=adapter.getItem(position);
                 //눌렀을때 코드!!
-                Toast.makeText(getActivity().getApplicationContext(),"클릭성공",Toast.LENGTH_LONG).show();
+                //Toast.makeText(getActivity().getApplicationContext(),"클릭성공, position: "+position,Toast.LENGTH_LONG).show();
+                int pid=item.getId();
+                Intent tocontent=new Intent(getActivity(),PostContent.class);
+                tocontent.putExtra("pid",pid);
+                Log.v("check","pid: "+pid);
+                startActivity(tocontent);
             }
         });
         return root;
 
     }
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.menu_write,menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.action_write:
+                Intent intent=new Intent(getActivity(),WritePost.class);
+                startActivity(intent);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
     void init(View view) {
         //RecyclerView recyclerView = findViewById(R.id.recyclerView);
         //RecyclerView recyclerView = getView().findViewById(R.id.recyclerView);
@@ -94,17 +109,23 @@ public class PostActivity extends Fragment {
 
     void getData() {
 
+        DatabaseHelper databaseHelper = new DatabaseHelper(getContext(), "DB", null, 1);
+        SQLiteDatabase db = databaseHelper.getWritableDatabase();
+
+        List<Integer> listID=new ArrayList<>();
         List<String> listTitle=new ArrayList<>();
         List<String> listAddress=new ArrayList<>();
         List<String> listDate=new ArrayList<>();
         List<Bitmap> listImg=new ArrayList<>();
         String sql="select * from Post";
-        Cursor cursor=MainActivity.db.rawQuery(sql,null);
+        Cursor cursor=db.rawQuery(sql,null);
+        int con_id;
         String tit;
         double lat,longi;
         byte[] bit;
         String datetime;
         while(cursor.moveToNext()){
+            con_id=cursor.getInt(0);
             tit=cursor.getString(1);
             lat=cursor.getDouble(3);
             longi=cursor.getDouble(4);
@@ -118,6 +139,7 @@ public class PostActivity extends Fragment {
             String date=datetime.substring(0,11);
             Log.v("check","date: "+date);
 
+            listID.add(con_id);
             listTitle.add(" "+tit);
             listAddress.add(add);
             listImg.add(bitmap);
@@ -139,7 +161,7 @@ public class PostActivity extends Fragment {
         );
          */
         for(int i=0;i<listTitle.size();i++) {
-            ItemContent data=new ItemContent(listTitle.get(i),listAddress.get(i),listDate.get(i),listImg.get(i));
+            ItemContent data=new ItemContent(listID.get(i),listTitle.get(i),listAddress.get(i),listDate.get(i),listImg.get(i));
 
             adapter.addItem(data);
         }

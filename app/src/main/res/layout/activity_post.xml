@@ -8,25 +8,6 @@
     android:paddingTop="?attr/actionBarSize">
 
 
-    <Button
-        android:id="@+id/writeButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="WritePost"
-
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-
-    <Button
-        android:id="@+id/ContentButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="124dp"
-
-        android:text="ShowPost"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"

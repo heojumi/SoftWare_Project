@@ -11,13 +11,15 @@ public class ItemContent {
     String title;
     String address;
     String date;
+    int id;
 
 
-    public ItemContent(String title, String address, String date, Bitmap image) {
+    public ItemContent(int id,String title, String address, String date, Bitmap image) {
         this.image=image;
         this.title=title;
         this.address=address;
         this.date=date;
+        this.id=id;
     }
 
 
@@ -37,4 +39,6 @@ public class ItemContent {
     public Bitmap getImage() {
         return image;
     }
+
+    public int getId(){return id;}
 }

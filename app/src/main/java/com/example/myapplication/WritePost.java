@@ -21,6 +21,9 @@ import android.provider.MediaStore;
 import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -31,6 +34,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresPermission;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -76,12 +80,15 @@ public class WritePost extends AppCompatActivity {
     Location location;
     Bitmap bitmap;
 
+    ActionBar ab;
+
 
     //GPSListener gpsListener;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_write_post);
+        ab=getSupportActionBar();
 
         checkPermission();
 
@@ -148,36 +155,19 @@ public class WritePost extends AppCompatActivity {
             }
         });
 
-        //취소 버튼
-        Button cancelButton=findViewById(R.id.goback);
-        cancelButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                AlertDialog.Builder builder=new AlertDialog.Builder(WritePost.this);
-                builder.setTitle("취소").setMessage("글 작성을 취소하시겠습니까? ");
-                builder.setPositiveButton("네", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        //finishActivity(500);//게시판 (post) 액티비티에서 startactivity 로 write를 호출해줬으므로, 해당 액티비티 종료
-                        finish();
-                    }
-                });
-                builder.setNegativeButton("아니오", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        ;
-                    }
-                });
-                AlertDialog alertDialog=builder.create();
-                alertDialog.show();
-            }
-        });
 
-        //완료 버튼:: db에 저장하기!
-        Button submitButton=findViewById(R.id.submit);
-        submitButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+    }//oncreate 끝
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_upload,menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch(item.getItemId()){
+            case R.id.action_write:
                 String contentString = contentText.getText().toString();
                 String titleString=titleText.getText().toString();
                 byte[] imageBitmap=null;
@@ -197,8 +187,8 @@ public class WritePost extends AppCompatActivity {
 
                 //MainActivity myDatabase= new MainActivity();
 
-                //DatabaseHelper databaseHelper = new DatabaseHelper(WritePost.this, "DB", null, 1);
-                //SQLiteDatabase db = databaseHelper.getWritableDatabase();
+                DatabaseHelper databaseHelper = new DatabaseHelper(WritePost.this, "DB", null, 1);
+                SQLiteDatabase db = databaseHelper.getWritableDatabase();
 
                 Log.v("check","set database");
                 String crt;
@@ -210,19 +200,42 @@ public class WritePost extends AppCompatActivity {
                         "longtitude REAL," +
                         "image BLOB," +
                         "created_day DATETIME DEFAULT CURRENT_TIMESTAMP);";
-                MainActivity.db.execSQL(crt);
+                db.execSQL(crt);
                 String sql="insert into Post (title,contents,latitude,longtitude,image) values (?,?,?,?,?)";
                 Object[] params={titleString,contentString,latitude,longitude,imageBitmap};
-                MainActivity.db.execSQL(sql,params);
+                db.execSQL(sql,params);
                 Log.v("check","exec success~");
 
                 Toast.makeText(WritePost.this,"업로드",Toast.LENGTH_SHORT).show();
 
                 finish();//db에 저장 후, 이전 액티비티로 돌아가기
-            }
-        });
-    }//oncreate 끝
+                return true;
 
+            case R.id.action_cancel:
+                AlertDialog.Builder builder=new AlertDialog.Builder(WritePost.this);
+                builder.setTitle("취소").setMessage("글 작성을 취소하시겠습니까? ");
+                builder.setPositiveButton("네", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        //finishActivity(500);//게시판 (post) 액티비티에서 startactivity 로 write를 호출해줬으므로, 해당 액티비티 종료
+                        finish();
+                    }
+                });
+                builder.setNegativeButton("아니오", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        ;
+                    }
+                });
+                AlertDialog alertDialog=builder.create();
+                alertDialog.show();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+
+        }
+
+    }
 
     @Override
     //사진 이미지 요청 들어오면 url 받아오는 동작

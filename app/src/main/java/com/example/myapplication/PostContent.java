@@ -1,5 +1,6 @@
 package com.example.myapplication;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
@@ -36,12 +37,13 @@ public class PostContent extends AppCompatActivity {
         String tit=null;
         String con=null;
 
-
+        Intent intent=getIntent();
+        int pid=intent.getExtras().getInt("pid");
         DatabaseHelper databaseHelper = new DatabaseHelper(PostContent.this, "DB", null, 1);
         SQLiteDatabase db = databaseHelper.getReadableDatabase();
         
         //PostActivity에서 사용자가 클릭한 게시글 있으면, 그거 intent로 전달 -> intent받아서 pid든 뭐든 으로 구별짓기
-        String sql="select * from Post where PID=2";
+        String sql="select * from Post where PID="+pid;
         Cursor cursor=db.rawQuery(sql,null);
         while(cursor.moveToNext()){
             tit=cursor.getString(1);
