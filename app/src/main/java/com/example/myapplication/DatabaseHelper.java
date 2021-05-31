@@ -28,7 +28,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL(createQuery);
         Log.v("check","exec success");
 
-        createQuery = "CREATE TABLE " + "Post" +
+         String createQuery2 = "CREATE TABLE " + "Post" +
                 "( PID INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 "title TEXT, " +
                 "contents TEXT," +
@@ -37,7 +37,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "image BLOB," +
                 "created_day DATETIME DEFAULT CURRENT_TIMESTAMP);";
 
-        sqLiteDatabase.execSQL(createQuery);
+        sqLiteDatabase.execSQL(createQuery2);
     }
 
 

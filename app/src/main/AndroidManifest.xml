@@ -22,7 +22,7 @@
             android:parentActivityName=".PostActivity">
         </activity>
         <activity android:name=".WritePost"></activity>
-
+        <activity android:name=".Login"></activity>
         <activity
             android:name=".PostActivity"
             android:label="@string/title_activity_post"
@@ -31,7 +31,7 @@
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="ㅋㅣ키키"/>
+            android:value="키키키키킼키ㅣㅋ"/>
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

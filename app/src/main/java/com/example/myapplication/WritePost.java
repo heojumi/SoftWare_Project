@@ -197,14 +197,23 @@ public class WritePost extends AppCompatActivity {
 
                 //MainActivity myDatabase= new MainActivity();
 
-                DatabaseHelper databaseHelper = new DatabaseHelper(WritePost.this, "DB", null, 1);
-                SQLiteDatabase db = databaseHelper.getWritableDatabase();
+                //DatabaseHelper databaseHelper = new DatabaseHelper(WritePost.this, "DB", null, 1);
+                //SQLiteDatabase db = databaseHelper.getWritableDatabase();
 
                 Log.v("check","set database");
-
+                String crt;
+                crt = "CREATE TABLE IF NOT EXISTS " + "Post" +
+                        "( PID INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                        "title TEXT, " +
+                        "contents TEXT," +
+                        "latitude REAL," +
+                        "longtitude REAL," +
+                        "image BLOB," +
+                        "created_day DATETIME DEFAULT CURRENT_TIMESTAMP);";
+                MainActivity.db.execSQL(crt);
                 String sql="insert into Post (title,contents,latitude,longtitude,image) values (?,?,?,?,?)";
                 Object[] params={titleString,contentString,latitude,longitude,imageBitmap};
-                db.execSQL(sql,params);
+                MainActivity.db.execSQL(sql,params);
                 Log.v("check","exec success~");
 
                 Toast.makeText(WritePost.this,"업로드",Toast.LENGTH_SHORT).show();

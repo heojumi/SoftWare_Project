@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -20,7 +21,15 @@ public class MyinfoActivity extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        ViewGroup rootview=(ViewGroup)inflater.inflate(R.layout.activity_myinfo,container,false);
-        return rootview;
+        View root=inflater.inflate(R.layout.activity_myinfo,container,false);
+        Button bt=root.findViewById(R.id.button12);
+        bt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent=new Intent(getActivity(),Login.class);
+                startActivity(intent);
+            }
+        });
+        return root;
     }
 }
