@@ -283,6 +283,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             longi1.add(longi);
             aname.add(aa);
         }
+
         for(int i=0;i<lat1.size();i++){
             MarkerOptions markerOptions=new MarkerOptions();
             LatLng latLng = new LatLng(lat1.get(i),longi1.get(i));
