@@ -219,7 +219,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
             if (locationList.size() > 0) {
                 location = locationList.get(locationList.size() - 1);
-                //location = locationList.get(0);
+                //location = locationList.get(0)map
 
                 currentPosition
                         = new LatLng(location.getLatitude(), location.getLongitude());
@@ -266,6 +266,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     }
 
     public void showAnimalInformation(LatLng location){
+
         mMap.clear();
         String sql="select * from Post";
         Cursor cursor=MainActivity.db.rawQuery(sql,null);
@@ -285,12 +286,40 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         for(int i=0;i<lat1.size();i++){
             MarkerOptions markerOptions=new MarkerOptions();
             LatLng latLng = new LatLng(lat1.get(i),longi1.get(i));
-            markerOptions.position(latLng)
-                    .title(aname.get(i));
-            mMap.addMarker(markerOptions);
+            if(distance(latLng.latitude,latLng.longitude, location.latitude, location.longitude)<5000) {
+                markerOptions.position(latLng)
+                        .title(aname.get(i));
+                mMap.addMarker(markerOptions);
+            }
         }
 
     }
+
+    private static double distance(double lat1, double lon1, double lat2, double lon2) {
+
+        double theta = lon1 - lon2;
+        double dist = Math.sin(deg2rad(lat1)) * Math.sin(deg2rad(lat2)) + Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.cos(deg2rad(theta));
+
+        dist = Math.acos(dist);
+        dist = rad2deg(dist);
+        dist = dist * 60 * 1.1515;
+
+            dist = dist * 1609.344;
+
+        return (dist);
+    }
+    private static double deg2rad(double deg) {
+        return (deg * Math.PI / 180.0);
+    }
+
+    // This function converts radians to decimal degrees
+    private static double rad2deg(double rad) {
+        return (rad * 180 / Math.PI);
+    }
+
+
+
+
     private void startLocationUpdates() {
 
         if (!checkLocationServicesStatus()) {
