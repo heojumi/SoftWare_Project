@@ -4,6 +4,8 @@ import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -114,6 +116,14 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 showPlaceInformation(currentPosition);
             }
         });
+        Button button2 = (Button)findViewById(R.id.button2);
+        button2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showAnimalInformation(currentPosition);
+            }
+        });
+
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -239,15 +249,44 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         if (previous_marker != null)
             previous_marker.clear();//지역정보 마커 클리어
 
+
         new NRPlaces.Builder()
                 .listener(MapActivity.this)
-                .key("키키키키키키키")
+                .key("키키")
                 .latlng(location.latitude, location.longitude)//현재 위치
                 .radius(5000) //500 미터 내에서 검색
                 .type(PlaceType.VETERINARY_CARE) //음식점
 
                 .build()
                 .execute();
+
+
+    }
+    public void showAnimalInformation(LatLng location){
+        mMap.clear();
+        String sql="select * from Post";
+        Cursor cursor=MainActivity.db.rawQuery(sql,null);
+        List<Double> lat1=new ArrayList<>();
+        List<Double> longi1=new ArrayList<>();
+        List<String> aname=new ArrayList<>();
+        double lat,longi;
+        String aa;
+        while(cursor.moveToNext()){
+            lat=cursor.getDouble(3);
+            longi=cursor.getDouble(4);
+            aa=cursor.getString(1);
+            lat1.add(lat);
+            longi1.add(longi);
+            aname.add(aa);
+        }
+        for(int i=0;i<lat1.size();i++){
+            MarkerOptions markerOptions=new MarkerOptions();
+            LatLng latLng = new LatLng(lat1.get(i),longi1.get(i));
+            markerOptions.position(latLng)
+                    .title(aname.get(i));
+            mMap.addMarker(markerOptions);
+        }
+
     }
     private void startLocationUpdates() {
 
