@@ -289,6 +289,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             if(distance(latLng.latitude,latLng.longitude, location.latitude, location.longitude)<5000) {
                 markerOptions.position(latLng)
                         .title(aname.get(i));
+
                 mMap.addMarker(markerOptions);
             }
         }
