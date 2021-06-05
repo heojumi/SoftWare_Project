@@ -31,6 +31,11 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
     public int getItemCount() {
         return listData.size();
     }
+    void clearItem(){
+        for(int i=0;i<listData.size();i++){
+            listData.clear();
+        }
+    }
 
     void addItem(ItemContent data) {
         listData.add(data);

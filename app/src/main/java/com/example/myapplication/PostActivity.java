@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 import android.app.ActionBar;
 
@@ -45,7 +46,14 @@ import java.util.Locale;
 public class PostActivity extends Fragment {
 
     ItemAdapter adapter;
-
+    static String loc="";
+    List<Integer> listID=new ArrayList<>();;
+    List<String> listTitle=new ArrayList<>();;
+    List<String> listAddress=new ArrayList<>();;
+    List<String> listDate=new ArrayList<>();;
+    List<Bitmap> listImg=new ArrayList<>();;
+    RecyclerView recyclerView;
+    int count=0;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,9 +66,27 @@ public class PostActivity extends Fragment {
         //ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.activity_post, container, false);
         View root=inflater.inflate(R.layout.activity_post,container,false);
         init(root);
-        getData();
+        EditText location=(EditText)root.findViewById(R.id.editTextTextPersonName2);
+        Button submit=(Button)root.findViewById(R.id.button3);
+        submit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
 
+                loc=location.getText().toString();
+                Log.v("check","location: "+loc);
+                listID.clear();
+                listTitle.clear();
+                listAddress.clear();
+                listDate.clear();
+                listImg.clear();
+                adapter.clearItem();
+                getData();
+                recyclerView.invalidate();
+                recyclerView.getAdapter().notifyDataSetChanged();
+            }
+        });
 
+            getData();
 
         adapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
@@ -71,13 +97,12 @@ public class PostActivity extends Fragment {
                 int pid=item.getId();
                 Intent tocontent=new Intent(getActivity(),PostContent.class);
                 tocontent.putExtra("pid",pid);
-                Log.v("check","pid: "+pid);
                 startActivity(tocontent);
             }
         });
         return root;
 
-    }
+    }//end of oncreate view
 
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
@@ -100,7 +125,7 @@ public class PostActivity extends Fragment {
     void init(View view) {
         //RecyclerView recyclerView = findViewById(R.id.recyclerView);
         //RecyclerView recyclerView = getView().findViewById(R.id.recyclerView);
-        RecyclerView recyclerView = view.findViewById(R.id.recyclerView);
+        recyclerView = view.findViewById(R.id.recyclerView);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(linearLayoutManager);
         adapter = new ItemAdapter();
@@ -112,11 +137,6 @@ public class PostActivity extends Fragment {
         DatabaseHelper databaseHelper = new DatabaseHelper(getContext(), "DB", null, 1);
         SQLiteDatabase db = databaseHelper.getWritableDatabase();
 
-        List<Integer> listID=new ArrayList<>();
-        List<String> listTitle=new ArrayList<>();
-        List<String> listAddress=new ArrayList<>();
-        List<String> listDate=new ArrayList<>();
-        List<Bitmap> listImg=new ArrayList<>();
         String sql="select * from Post";
         Cursor cursor=db.rawQuery(sql,null);
         int con_id;
@@ -132,43 +152,40 @@ public class PostActivity extends Fragment {
             bit=cursor.getBlob(5);
             datetime=cursor.getString(6);
 
-            Log.v("check","dattime: "+datetime);
-
-            String add=getCurrentAddress(lat,longi);
+            String add=getCurrentAddress(lat,longi,1);
             Bitmap bitmap= BitmapFactory.decodeByteArray(bit,0,bit.length);
             String date=datetime.substring(0,11);
-            Log.v("check","date: "+date);
 
-            listID.add(con_id);
-            listTitle.add(" "+tit);
-            listAddress.add(add);
-            listImg.add(bitmap);
-            listDate.add(" "+date);
+            if(loc.equals("")) {
+                listID.add(con_id);
+                listTitle.add(" " + tit);
+                listAddress.add(add);
+                listImg.add(bitmap);
+                listDate.add(" " + date);
+            }
+            else{
+                String subarea=getCurrentAddress(lat,longi,2);
+                if(loc.equals(subarea)){
+                    listID.add(con_id);
+                    listTitle.add(" " + tit);
+                    listAddress.add(add);
+                    listImg.add(bitmap);
+                    listDate.add(" " + date);
+                }
+            }
         }
-        /*
-        listTitle= Arrays.asList("상도동 앞 고양이 실종", "새끼 강아지 임보해주실분");
-        listAddress=Arrays.asList(
-                "서울시 동작구 상도동",
-                "서울시 동작구 상도동"
-        );
-        List<String> listDate=Arrays.asList(
-                "2021-04-11",
-                "2021-05-31"
-        );
-        List<Integer> listImage=Arrays.asList(
-                R.drawable.list,
-                R.drawable.list
-        );
-         */
+        Log.v("check","size: "+listTitle.size());
         for(int i=0;i<listTitle.size();i++) {
             ItemContent data=new ItemContent(listID.get(i),listTitle.get(i),listAddress.get(i),listDate.get(i),listImg.get(i));
-
+            Log.v("check","new item: "+listID.get(i));
             adapter.addItem(data);
         }
-        adapter.notifyDataSetChanged();
-    }
+        recyclerView.invalidate();
+        //adapter.notifyDataSetChanged();
+        recyclerView.getAdapter().notifyDataSetChanged();
+    }//end of getdata
 
-    public String getCurrentAddress(double latitude,double longitude){
+    public String getCurrentAddress(double latitude,double longitude,int i){
         Geocoder geocoder=new Geocoder(getContext(), Locale.getDefault());
         List<Address> add;
         try{
@@ -187,9 +204,15 @@ public class PostActivity extends Fragment {
             return "주소 미발견";
         }
         Address address=add.get(0);
-        String adr=address.getAddressLine(0).toString().replaceFirst("대한민국","");
-        //return address.getAdminArea()+" "+address.getSubLocality()+" "+address.getThoroughfare().toString();  //지오코더 주소 자르기, 순서대로 도/행정구역/동 단위
-        return adr;
+        if(i==1) {
+            String adr = address.getAddressLine(0).toString().replaceFirst("대한민국", "");
+            //return address.getAdminArea()+" "+address.getSubLocality()+" "+address.getThoroughfare().toString();  //지오코더 주소 자르기, 순서대로 도/행정구역/동 단위
+            return adr;
+        }
+        else{
+            String adr=address.getSubLocality();
+            return adr;
+        }
 
         //return address.getAddressLine(0).toString()+"\n";
     }

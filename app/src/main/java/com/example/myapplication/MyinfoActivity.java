@@ -29,8 +29,14 @@ public class MyinfoActivity extends Fragment {
         bt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent=new Intent(getActivity(),Login.class);
-                startActivity(intent);
+
+                if(Login.loginSuccess==1){
+                    Toast.makeText(getContext(),"이미 로그인 되어있습니다!",Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    Intent intent = new Intent(getActivity(), Login.class);
+                    startActivity(intent);
+                }
             }
         });
 

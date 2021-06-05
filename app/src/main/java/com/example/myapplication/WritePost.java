@@ -80,6 +80,7 @@ public class WritePost extends AppCompatActivity {
     EditText titleText;
     Location location;
     Bitmap bitmap;
+    PostActivity fragment2;
 
     ActionBar ab;
 
@@ -203,14 +204,16 @@ public class WritePost extends AppCompatActivity {
                         "created_day DATETIME DEFAULT CURRENT_TIMESTAMP);";
                 db.execSQL(crt);
                 String sql="insert into Post (title,contents,latitude,longtitude,image) values (?,?,?,?,?)";
-                Object[] params={titleString,contentString,latitude,longitude,imageBitmap};
+                //37.49459853254907, 126.95967239546334
+                Object[] params={titleString,contentString,37.49459853254907,126.95967239546334,imageBitmap};
                 db.execSQL(sql,params);
                 Log.v("check","exec success~");
 
+                fragment2=new PostActivity();
                 Toast.makeText(WritePost.this,"업로드",Toast.LENGTH_SHORT).show();
-                finish();
-
-                //finish();//db에 저장 후, 이전 액티비티로 돌아가기
+                //
+                finish();//db에 저장 후, 이전 액티비티로 돌아가기
+                //getSupportFragmentManager().beginTransaction().replace(R.id.container, fragment2).commit();
                 return true;
 
             case R.id.action_cancel:

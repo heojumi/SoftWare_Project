@@ -66,7 +66,7 @@ public class Login extends AppCompatActivity {
                     if (loginSuccess == 1) {
                         Intent intent=new Intent(Login.this,MainActivity.class);
                         startActivity(intent);
-                        Toast.makeText(Login.this, "환영합니다, " + user + "님!", Toast.LENGTH_LONG).show();
+                        Toast.makeText(Login.this, "환영합니다, " + user + "님!", Toast.LENGTH_SHORT).show();
                     }
                 }
             }
