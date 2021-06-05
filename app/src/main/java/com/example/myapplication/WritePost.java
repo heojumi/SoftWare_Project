@@ -205,7 +205,7 @@ public class WritePost extends AppCompatActivity {
                 db.execSQL(crt);
                 String sql="insert into Post (title,contents,latitude,longtitude,image) values (?,?,?,?,?)";
                 //37.49459853254907, 126.95967239546334
-                Object[] params={titleString,contentString,37.49459853254907,126.95967239546334,imageBitmap};
+                Object[] params={titleString,contentString,latitude,longitude,imageBitmap};
                 db.execSQL(sql,params);
                 Log.v("check","exec success~");
 
