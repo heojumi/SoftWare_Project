@@ -40,6 +40,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
+import androidx.fragment.app.Fragment;
 
 import android.location.Location;
 import android.location.LocationListener;
@@ -148,7 +149,7 @@ public class WritePost extends AppCompatActivity {
 
                 //locationTxt.setText("위치정보: "+provider+"\n"+"위도: "+latitude+"\n"+"경도: "+longitude);
                 locationTxt.setText(getCurrentAddress(latitude,longitude));
-                Toast.makeText(WritePost.this,"위도: "+latitude+", 경도: "+longitude,Toast.LENGTH_LONG).show();
+                //Toast.makeText(WritePost.this,"위도: "+latitude+", 경도: "+longitude,Toast.LENGTH_LONG).show();
                 //lm.requestLocationUpdates(LocationManager.GPS_PROVIDER,5000,100,gpsLocationListener);//5초, 100미터
                 //lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,5000,100,gpsLocationListener);
 
@@ -207,8 +208,9 @@ public class WritePost extends AppCompatActivity {
                 Log.v("check","exec success~");
 
                 Toast.makeText(WritePost.this,"업로드",Toast.LENGTH_SHORT).show();
+                finish();
 
-                finish();//db에 저장 후, 이전 액티비티로 돌아가기
+                //finish();//db에 저장 후, 이전 액티비티로 돌아가기
                 return true;
 
             case R.id.action_cancel:

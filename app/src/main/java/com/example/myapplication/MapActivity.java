@@ -254,7 +254,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
         new NRPlaces.Builder()
                 .listener(MapActivity.this)
-                .key("키키키키")
+                .key("키키키")
                 .latlng(location.latitude, location.longitude)//현재 위치
                 .radius(5000) //500 미터 내에서 검색
                 .type(PlaceType.VETERINARY_CARE) //음식점

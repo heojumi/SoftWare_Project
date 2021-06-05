@@ -7,6 +7,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -23,6 +24,8 @@ public class MyinfoActivity extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root=inflater.inflate(R.layout.activity_myinfo,container,false);
         Button bt=root.findViewById(R.id.button12);
+        TextView textView=(TextView)root.findViewById(R.id.textView3);
+
         bt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -30,6 +33,11 @@ public class MyinfoActivity extends Fragment {
                 startActivity(intent);
             }
         });
+
+        if(Login.loginSuccess==1){
+            textView.setText("환영합니다, "+Login.user+ "님!");
+        }
+
         return root;
     }
 }

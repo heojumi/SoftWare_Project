@@ -23,8 +23,8 @@ public class Login extends AppCompatActivity {
     SharedPreferences pref;
     SharedPreferences.Editor editor;
     Button loginBtn,joinBtn;
-    int loginSuccess=0;
-    int joinSuccess=1;
+    static int loginSuccess=0;
+    static int joinSuccess=1;
     static String user;
 
     @Override
@@ -54,7 +54,7 @@ public class Login extends AppCompatActivity {
                         String gotpw = cursor.getString(2);
                         if (gotId.equals(id) && gotpw.equals(password)) {
                             loginSuccess = 1;
-                            Toast.makeText(Login.this, "로그인 성공!", Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(Login.this, "로그인 성공!", Toast.LENGTH_SHORT).show();
                             user = id;
                             break;
                         }
