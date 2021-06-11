@@ -86,7 +86,13 @@ public class PostActivity extends Fragment {
             }
         });
 
-            getData();
+        listID.clear();
+        listTitle.clear();
+        listAddress.clear();
+        listDate.clear();
+        listImg.clear();
+        adapter.clearItem();
+        getData();
 
         adapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
